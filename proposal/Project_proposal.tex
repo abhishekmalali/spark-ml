@@ -1,0 +1,47 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{courier}
+\usepackage{multicol}
+\usepackage{microtype} %required to fix courier linebreaking issues
+\usepackage{hyperref} % make references into links
+\usepackage{amsfonts}
+\hypersetup{colorlinks=true, linkcolor=blue} %make them pretty links
+\usepackage[all]{hypcap} %make them link to the right place
+\usepackage{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+\usepackage{geometry}
+\geometry{legalpaper, portrait, margin=1in}
+
+\begin{document}
+	\title{Machine Learning Algorithms in Spark}
+	\author{Abhishek Malali (abhishekmalali@g.harvard.edu)\\
+			Neil Chainani (chainani@g.harvard.edu)\\
+			Leonhard Speilberg (email)}
+	\date{\today}
+	\maketitle
+	\section{Background}
+	Spark has a machine learning library called MLib which has a missing Neural networks functionality which was our inspiration to write ML algorithms in Spark.
+
+	\section{Benchmarking Data}
+	We intend to use the (small dataset) for initial testing which we would later scale up to (large dataset) to benchmark spark implementations against scikit-learn. 
+
+
+	\section{Objectives - Functionality and Performance}
+
+	\section{Algorithms to be implemented}
+		\begin{itemize}
+			\item Artificial Neural Networks - ANNs are highly paralellizable and plan to implement a basic implementation which works on Backpropagation for starters which can be extended to other learning algorithms.
+			\item Random Forests - Random forests are paralellizable since we need to create different classification trees which can be done on multiple processors without conflict and later integrated to find results.
+			\item Add one more ML algorithm
+		\end{itemize}
+
+	\section{Design Overview - Technologies and use of Parallelism}
+
+	\section{Verification}
+
+	\section{Schedule, Milestones, and Division of Work}
+\end{document}
