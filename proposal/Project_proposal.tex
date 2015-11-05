@@ -24,7 +24,8 @@
 	\date{\today}
 	\maketitle
 	\section{Background}
-	Spark has a machine learning library called MLib which has a missing Neural networks functionality which serves as our main inspiration to implement additional ML algorithms in Spark.
+	
+	Spark's machine learning library MLlib has vast functionality but unfortunately lacks certain classifiers. Ordinal logistic regression is one of those missing classifiers, and is particularly useful for ordinal dependent variables, such as rating systems and surveys. We propose to design an ordinal logit library built on top of Spark that is optimized to take advantage of Spark's parallelism.  
 
 	\section{Benchmarking Data}
 	We intend to use the (small dataset) for initial testing which we would later scale up to (large dataset) to benchmark spark implementations against scikit-learn. 
@@ -42,6 +43,7 @@
 	\section{Design Overview - Technologies and use of Parallelism}
 
 	\section{Verification}
+	Once a data set is determined, we will use the existing ordinal logit libraries in Mort or scikit-learn to establish a baseline. We will evaluate performance as compared against other Spark implementations of ordinal logit found online (if they exist) and against MLlib's linear regression, by treating the ordinal data as continuous. 
 
 	\section{Schedule, Milestones, and Division of Work}
 \end{document}
