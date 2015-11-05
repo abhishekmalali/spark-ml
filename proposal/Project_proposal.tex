@@ -24,12 +24,27 @@
 	\date{\today}
 	\maketitle
 	\section{Background}
-	
-	Spark's machine learning library MLlib has vast functionality but unfortunately lacks certain classifiers. Ordinal logistic regression is one of those missing classifiers, and is particularly useful for ordinal dependent variables, such as rating systems and surveys. We propose to design an ordinal logit library built on top of Spark that is optimized to take advantage of Spark's parallelism.  
 
-	
+	Spark's machine learning library MLlib has vast functionality but unfortunately lacks certain classifiers. Ordinal logistic regression is one of those missing classifiers, and is particularly useful for ordinal dependent variables, such as rating systems and surveys. We propose to design an ordinal logit library built on top of Spark that is optimized to take advantage of Spark's parallelism.
+
+
 	\section{Objectives - Functionality and Performance}
 	To implement the machine learning algorithms in Spark while benchmarking the code against Scikit-learn and MLlib which is the standard Machine learning library for Spark. A part of the project will also focus on fitting the data to the problem in the best possible way while ensuring all standard ML rules are followed.
+
+	\section{Models to be implemented}
+	\subsection{Ordinal regression}
+	Ordinal regression is a variation of a linear regression model which allows for the prediction variable to take ordinal values only. In a first version, we want to implement a standard ordinal regression model and parallelize the learning procedure for it. Other components involve implementing parallelized versions of functions to address the root mean squared error, p-values and the f-statistic.
+	\subsection{Bayesian ordinal regression}
+	As the standard ordinal regression model might overfit data one usual approach is to introduce a prior. In our project the second step is to use different priors and provide an overall framework which allows the user a convenient process of model selection.
+
+	\section{Design Overview}
+	One of the critical tasks in this project is using both an efficient and parallelizable algorithm for the involved optimization problem. Therefore, we will first start with an implementation of stochastic gradient descent which we will base on \href{Reference}{http://martin.zinkevich.org/publications/nips2010.pdf}.
+	\\
+	\\
+	Another target of our implementation is to provide the user a covenient framework allowing to test different (Bayesian) ordinal regression models (i.e. using different priors) with the parallel processing power of Spark.
+	\\
+	\\
+	For our implementation we will use pyspark or Scala.
 
 
 	\section{Milestones}
@@ -39,21 +54,17 @@
 			\item 11/27 - Parallelizing regression code and work on bayesian ordinal regressions
 			\item 12/4 - Final analysis of current work and start work on project webpage
 		\end{itemize}
-	
+
 	\section{Division of work}
 		\begin{itemize}
 			\item Leonhard - Design of algorithms for Ordinal regressions
 			\item Neil - Implementation of benchmark code and implementation of algorithms in Spark
 			\item Abhishek - Implementing algorithms in Spark and Parallelizing strategies
 		\end{itemize}
-<<<<<<< HEAD
 
-	\section{Design Overview - Technologies and use of Parallelism}
 
 	\section{Verification}
-	Once a data set is determined, we will use the existing ordinal logit libraries in Mort or scikit-learn to establish a baseline. We will evaluate performance as compared against other Spark implementations of ordinal logit found online (if they exist) and against MLlib's linear regression, by treating the ordinal data as continuous. 
+	Once a data set is determined, we will use the existing ordinal logit libraries in Mort or scikit-learn to establish a baseline. We will evaluate performance as compared against other Spark implementations of ordinal logit found online (if they exist) and against MLlib's linear regression, by treating the ordinal data as continuous.
 
-	\section{Schedule, Milestones, and Division of Work}
-=======
->>>>>>> 6b6de0c473015cd0b41d72840ce314f544f847c7
+
 \end{document}
