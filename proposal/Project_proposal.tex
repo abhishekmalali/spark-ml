@@ -32,15 +32,20 @@
 
 	\section{Objectives - Functionality and Performance}
 
-	\section{Algorithms to be implemented}
-		\begin{itemize}
-			\item Artificial Neural Networks - ANNs are highly paralellizable and plan to implement a basic implementation which works on Backpropagation for starters which can be extended to other learning algorithms.
-			\item Random Forests - Random forests are paralellizable since we need to create different classification trees which can be done on multiple processors without conflict and later integrated to find results.
-			\item Add one more ML algorithm
-		\end{itemize}
+	\section{Models to be implemented}
+	\subsection{Ordinal regression}
+	Ordinal regression is a variation of a linear regression model which allows for the prediction variable to take ordinal values only. In a first version, we want to implement a standard ordinal regression model and parallelize the learning procedure for it. Other components involve implementing parallelized versions of functions to address the root mean squared error, p-values and the f-statistic. 
+	\subsection{Bayesian ordinal regression}
+	As the standard ordinal regression model might overfit data one usual approach is to introduce a prior. In our project the second step is to use different priors and provide an overall framework which allows the user a convenient process of model selection.
 
-	\section{Design Overview - Technologies and use of Parallelism}
-
+	\section{Design Overview}
+	One of the critical tasks in this project is using both an efficient and parallizable algorithm for the involved optimization problem. Therefore, we will first start with an implementation of stochastic gradient descent which we will base on \url{http://martin.zinkevich.org/publications/nips2010.pdf}.
+	\\
+	\\
+	Another target of our implementation is to provide the user a covenient framework allowing to test different (Bayesian) ordinal regression models (i.e. using different priors) with the parallel processing power of Spark. 
+	\\
+	\\
+	For our implementation we will use pyspark or Scala.
 	\section{Verification}
 
 	\section{Schedule, Milestones, and Division of Work}
