@@ -26,11 +26,9 @@
 	\section{Background}
 	Spark has a machine learning library called MLib which has a missing Neural networks functionality which serves as our main inspiration to implement additional ML algorithms in Spark.
 
-	\section{Benchmarking Data}
-	We intend to use the (small dataset) for initial testing which we would later scale up to (large dataset) to benchmark spark implementations against scikit-learn. 
-
-
+	
 	\section{Objectives - Functionality and Performance}
+	To implement the machine learning algorithms in Spark while benchmarking the code against Scikit-learn and MLlib which is the standard Machine learning library for Spark. A part of the project will also focus on fitting the data to the problem in the best possible way while ensuring all standard ML rules are followed.
 
 	\section{Algorithms to be implemented}
 		\begin{itemize}
@@ -40,8 +38,22 @@
 		\end{itemize}
 
 	\section{Design Overview - Technologies and use of Parallelism}
+	
 
 	\section{Verification}
 
-	\section{Schedule, Milestones, and Division of Work}
+	\section{Milestones}
+		\begin{itemize}
+			\item 11/13 - Research and benchmark implementations(mord/scikit-learn)
+			\item 11/20 - Preliminary implementations in Spark for ordinal regressions
+			\item 11/27 - Parallelizing regression code and work on bayesian ordinal regressions
+			\item 12/4 - Final analysis of current work and start work on project webpage
+		\end{itemize}
+	
+	\section{Division of work}
+		\begin{itemize}
+			\item Leonhard - Design of algorithms for Ordinal regressions
+			\item Neil - Implementation of benchmark code and implementation of algorithms in Spark
+			\item Abhishek - Implementing algorithms in Spark and Parallelizing strategies
+		
 \end{document}
