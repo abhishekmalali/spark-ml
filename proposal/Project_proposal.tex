@@ -36,6 +36,8 @@
 	Ordinal regression is a variation of a linear regression model which allows for the prediction variable to take ordinal values only. In a first version, we want to implement a standard ordinal regression model and parallelize the learning procedure for it. Other components involve implementing parallelized versions of functions to address the root mean squared error, p-values and the f-statistic.
 	\subsection{Bayesian ordinal regression}
 	As the standard ordinal regression model might overfit data one usual approach is to introduce a prior. In our project the second step is to use different priors and provide an overall framework which allows the user a convenient process of model selection.
+	\subsection{Random Forests}
+	Random forests will be a classifier we would like to implement since the tree formation process can be split across multiple cores hence speeding up the process.
 
 	\section{Design Overview}
 	One of the critical tasks in this project is using both an efficient and parallelizable algorithm for the involved optimization problem. Therefore, we will first start with an implementation of stochastic gradient descent which we will base on \href{Reference}{http://martin.zinkevich.org/publications/nips2010.pdf}.
