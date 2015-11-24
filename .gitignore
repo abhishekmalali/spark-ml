@@ -4,3 +4,7 @@
 *.gz
 *.data
 *.csv
+# ignore cached files
+cache/
+# ignore MAC files
+.DS_Store
