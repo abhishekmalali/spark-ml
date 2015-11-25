@@ -72,7 +72,7 @@ def main():
 	# decompress file
 	print('decompressing file...')
 	with gzip.open(os.path.join(cache_path, 'covtype.data.gz'), 'rb') as infile:
-	    with open(os.path.join(cache_path, 'covtype.data'), 'w') as outfile:
+	    with open(os.path.join(cache_path, 'covtype.csv'), 'w') as outfile:
 			for line in infile:
 				outfile.write(line)
 
