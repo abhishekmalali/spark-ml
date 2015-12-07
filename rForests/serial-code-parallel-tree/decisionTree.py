@@ -47,10 +47,13 @@ def unique(lst):
 
 def get_values(data, attr):
     """
-    Creates a list of values in the chosen attribut for each record in data,
+    Creates a list of values in the chosen attribute for each record in data,
     prunes out all of the redundant values, and return the list.  
     """
-    return unique([record[1][attr] for record in data])
+    try:
+        return unique([record[1][attr] for record in data])
+    except:
+        return data
 
 def choose_attribute(data, attributes, fitness):
     """
@@ -78,8 +81,11 @@ def get_examples(data, attr, value):
         return rtn_lst
     else:
         for record in data:
-            if record[1][attr]==value:
-                rtn_lst.append(record)
+            try:
+                if record[1][attr]==value:
+                    rtn_lst.append(record)
+            except:
+                continue
     return rtn_lst
 
 def create_decision_tree(data, attributes, fitness_func, columns):
@@ -118,7 +124,10 @@ def create_decision_tree(data, attributes, fitness_func, columns):
 
             # Add the new subtree to the empty dictionary object in our new
             # tree/node we just created.
-            tree[columns[best]][val] = subtree
+            try:
+                tree[columns[best]][val] = subtree
+            except:
+                continue
 
     return tree
 
@@ -150,7 +159,7 @@ def classify_rf(data, tree_list, columns):
     
     result = Counter(res)
     return result.most_common(1)[0][0]
-    """
+    """  
     (values,counts) = np.unique(res,return_counts=True)
     ind=np.argmax(counts)
     return values[ind]
