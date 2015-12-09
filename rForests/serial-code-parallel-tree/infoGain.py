@@ -32,11 +32,17 @@ def gain(data, attr):
     subset_entropy = 0.0
 
     # Calculate the frequency of each of the values in the target attribute
+    keys = []
+    
     for record in data:
-        if (val_freq.has_key(record[1][attr])):
-            val_freq[record[1][attr]] += 1.0
-        else:
-            val_freq[record[1][attr]] = 1.0
+        try:
+            if record[1][attr] in keys:
+                val_freq[record[1][attr]] += 1.0
+            else:
+                keys.append(record[1][attr])
+                val_freq[record[1][attr]] = 1.0
+        except:
+            continue 
 
     # Calculate the sum of the entropy for each subset of records weighted
     # by their probability of occuring in the training set.

@@ -34,21 +34,27 @@ def choose_columns(num_cols,m):
 
 #Code for the balance dataset
 # Testing the parallel code
-sample = sc.textFile('../data/balance-scale.csv')
+"""
+sample = sc.textFile('balance-scale.csv')
 rdd=sample.map(lambda x:x.split()).map(lambda x: x[0].strip("'").split(","))\
             .map(lambda x:[v for v in x])\
             .map(lambda x: (str(x[0]),[int(k) for k in x[1:]]))
 columns = ['Left-Weight','Left-Distance','Right-Weight','Right-Distance']
-samplec = rdd.collect()
-"""
+print rdd.collect()
+#samplec = rdd.collect()
+#print samplec
+
 import csv
 import itertools
 samplec = []
-with open('../data/balance-scale.csv', 'rb') as csvfile:
+with open('balance-scale.csv', 'rb') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
         samplec.append((str(row[0]),row[1:]))
-"""
+
+#print samplec
+
+
 #Creating an RDD with bootstrapped data
 # n is number of trees in our forest
 n=10
@@ -75,16 +81,20 @@ res_rdd = rdd.map(lambda x:(x[0],classify_rf(x[1], res, columns)))
 print "Accuracy:", 100*(res_rdd.filter(lambda x:x[0] == x[1]).count())/float(res_rdd.count()),"%"
 """
 
-
 #Code for the forest dataset
 # Testing the parallel code
 import csv
 import itertools
 data = []
-with open('covtype.csv', 'rb') as csvfile:
+num_rows = 40000;
+row_num = 0
+with open('../data/covtype.csv', 'rb') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
     for row in spamreader:
+        row_num += 1
         data.append((row[-1],row[0:-1]))
+        if row_num > num_rows:
+            break
 
 soil_list =[]
 for k in range(40):
@@ -103,12 +113,12 @@ columns_data = list(itertools.chain(*names))
 data_train = discretize(data,range(10))
 #Creating an RDD with bootstrapped data
 # n is number of trees in our forest
-n=1
+n=25
 length=len(data_train)
-forest=[data_train]
+#forest=[data_train]
 #Checking length
 print "Length of the dataset: ", length
-'''
+
 forest=[]
 # commence bootstrapping
 start_time = time.time()
@@ -116,17 +126,18 @@ for i in range(n):
     # add tree to forest
     forest.append(sample_wr(data_train,length))
 print "Time taken to bootstrap data: ", time.time() - start_time
-'''
+
 #Generating the decision tree parallely
-start_time = time.time()
+
 forest_rdd=sc.parallelize(forest)
-
-res = forest_rdd.map(lambda s: create_decision_tree(s, choose_columns(len(columns),10), gain, columns)).collect()
+print "Loaded the data"
+start_time = time.time()
+res = forest_rdd.map(lambda s: create_decision_tree(s, choose_columns(len(columns_data),10), gain, columns_data)).collect()
 print "Time taken to generate the forest: ", time.time() - start_time
-
+#print res
 
 #Checking accuracy
 test_rdd = sc.parallelize(data_train)
-res_rdd = test_rdd.map(lambda x:(x[0],classify_rf(x[1], res, columns)))
+res_rdd = test_rdd.map(lambda x:(x[0],classify_rf(x[1], res, columns_data)))
 print "Accuracy:", 100*(res_rdd.filter(lambda x:x[0] == x[1]).count())/float(res_rdd.count()),"%"
-"""
+
