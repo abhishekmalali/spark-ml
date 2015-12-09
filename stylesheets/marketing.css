@@ -139,15 +139,17 @@ a.pure-button-primary {
  */
 
 .splash-container {
-    background: #1f8dd6;
+   box-shadow: inset 0 0 0 1000px rgba(20,60,0,.6);
     z-index: 1;
     overflow: hidden;
+    background-image: url(https://images.unsplash.com/photo-1429042344633-913ea4be5fb7?crop=entropy&fit=crop&fm=jpg&h=700&ixjsv=2.1.0&ixlib=rb-0.3.5&q=80&w=1225);
     /* The following styles are required for the "scroll-over" effect */
     width: 100%;
     height: 88%;
     top: 0;
     left: 0;
     position: fixed !important;
+
 }
 
 .splash {

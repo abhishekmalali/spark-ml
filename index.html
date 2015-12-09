@@ -1,53 +1,68 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="A layout example that shows off a responsive product landing page.">
-<title>Landing Page &ndash; Layout Examples &ndash; Pure</title>
-<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
-<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-<link rel="stylesheet" href="stylesheets/marketing.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A layout example that shows off a responsive product landing page.">
+  <title>Landing Page &ndash; Layout Examples &ndash; Pure</title>
+  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+  <link rel="stylesheet" href="stylesheets/marketing.css">
+  <style>
+  .width-1 {
+    padding: 2% 15%;
+    text-align: left !important
+  }
+  .tab div {
+    display: none;
+  }
+
+  .tab div:target {
+    display: block;
+  }
+
+  </style>
 </head>
 <body>
 
 
 
-<div class="splash-container">
+  <div class="splash-container">
     <div class="splash">
-        <h1 class="splash-head">Machine Learning in Spark</h1>
-        <p class="splash-subhead">
-            Implementations and benchmarking of Ordinal Regression and Random
-            Forests using Apache Spark and pyspark.
-        </p>
+      <h1 class="splash-head">Machine Learning in Spark</h1>
+      <p class="splash-subhead">
+        Implementations and benchmarking of Ordinal Regression and Random
+        Forests from scratch using Apache Spark and pyspark.
+      </p>
     </div>
-</div>
-
-<div class="content-wrapper">
-  <div class="content">
-  <span class="pure-menu-heading is-center">Background</span>
-  <p>Here is some background which we will fill in for stuff. Then there are two
-    tabs below which hold the real content. Here is some background which we will fill in for stuff. Then there are two
-      tabs below which hold the real content. Here is some background which we will fill in for stuff. Then there are two
-        tabs below which hold the real content. Yippee!!
-  </p>
-</div>
-  <div class="content is-center">
-      <div class="pure-menu pure-menu-horizontal is-center">
-        <ul class="pure-menu-list">
-          <li class="pure-menu-item pure-menu-selected"><a href="#" class="pure-menu-link">Ordinal Regression</a></li>
-          <li class="pure-menu-item pure-menu-selected"><a href="#" class="pure-menu-link">Random Forests</a></li>
-        </ul>
-      </div>
-
   </div>
 
-</div>
+  <div class="content-wrapper">
+    <div class="content width-1">
+      <span class="pure-menu-heading is-center">Background</span>
+      <p>Here is some background which we will fill in for stuff. Then there are two
+        tabs below which hold the real content. Here is some background which we will fill in for stuff. Then there are two
+        tabs below which hold the real content. Here is some background which we will fill in for stuff. Then there are two
+        tabs below which hold the real content. Yippee!!
+      </p>
+    </div>
+    <div class="content is-center tab">
+      <span class="pure-menu pure-menu-horizontal is-center">
+        <ul class="pure-menu-list">
+          <li class="pure-menu-item pure-menu-selected"><a href="#ordreg" class="pure-menu-link">Ordinal Regression</a></li>
+          <li class="pure-menu-item pure-menu-selected"><a href="#rf" class="pure-menu-link">Random Forests</a></li>
+        </ul>
+      </span>
 
-
-
-
+      <div class="content width-1" id="ordreg">
+        ordreg
+      </div>
+      <div class="content width-1" id="rf">
+        haha!
+      </div>
+    </div>
+  </div>
 
 
 </body>
