@@ -1,69 +1,325 @@
 <!doctype html>
-<html lang="en">
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A layout example that shows off a responsive product landing page.">
-  <title>Landing Page &ndash; Layout Examples &ndash; Pure</title>
-  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
-  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
-  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-  <link rel="stylesheet" href="stylesheets/marketing.css">
-  <style>
-  .width-1 {
-    padding: 2% 15%;
-    text-align: left !important
-  }
-  .tab div {
-    display: none;
-  }
+    <meta charset="utf-8">
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Machine Learning in Spark</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery.fancybox.css">
+    <link rel="stylesheet" href="css/flexslider.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/queries.css">
+    <link rel="stylesheet" href="css/etline-font.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <script type="text/javascript" src="http://latex.codecogs.com/latexit.js"></script>
 
-  .tab div:target {
-    display: block;
-  }
-
-  </style>
 </head>
-<body>
+<body id="top">
+    <!--[if lt IE 8]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <section class="hero">
+        <section class="navigation">
+            <header>
+                <div class="header-content">
+                    <div class="header-nav">
+                        <nav>
+                            <ul class="primary-nav">
+                                <li><a href="#rf">Random Forests</a></li>
+                                <li><a href="#ordreg">Ordinal Regression</a></li>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+        </section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="hero-content text-center">
+                        <h1>Machine Learning in Spark</h1>
+                        <p class="intro">Implementations and benchmarking of Ordinal Regression and Random Forests from scratch using Apache Spark and pyspark.</p>
+                        <a href="#intro" class="btn btn-large">Let's get started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="down-arrow floating-arrow"><a href="#intro"><i class="fa fa-angle-down"></i></a></div>
+    </section>
+    <section class="features section-padding" id="intro">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                  <h1 style="text-align:center;">Introduction</h1>
+                  <br/>
+                  <p>Here is some background which we will fill in for stuff. Then there are two
+                    tabs below which hold the real content. Here is some background which we will fill in for stuff. Then there are two
+                    tabs below which hold the real content. Here is some background which we will fill in for stuff. Then there are two
+                    tabs below which hold the real content. Yippee!!
+                  </p>
+                </div>
+            </div>
+        </div>
+        <div class="device-showcase">
+            <div class="devices">
+                <div class="ipad-wrap wp1"></div>
+                <div class="iphone-wrap wp2"></div>
+            </div>
+        </div>
+        <div class="responsive-feature-img"><img src="img/devices.png" alt="responsive devices"></div>
+    </section>
+    <section class="features-extra section-padding" id="rf">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="feature-list">
+                        <h1>Random Forests</h1>
+                        <br/>
+                        <p>Random Forests are commonly used ensemble learning methods which can be used for classification and regression. The method involves creating a multitude of decision trees during training. For regression we use the mean of the predicted values from all these trees whereas for classification, we use the mode of the predicted values. Random forests are well used in the machine learning community due to them not overfitting.</p>
 
+                        <p>Decision trees are usually grown deep to gain as much information about the training set as possible. This leads to overfitting of the tree given the data.  As the trees are grown deeper they seem to have a lower bias and an increased variance. A low bias implies that the error from the assumptions in the learning model are low. Variance is the error in the modelling caused by sensitivity of the model towards the data. In case of high variance, the noise is modelled as well which leads to erroneous results later on. This is not desirable for a machine learning problem since the test data might not constitute the same distribution as the training set used. An ideal solution is to find the balance between bias and variance since we don’t want our classifier or regressor to be dependent on the data.</p>
 
+                        <p>The first step towards building many trees was to go ahead and build a single tree. We initially started with the ID3 algorithm and moved to the C4.5 algorithm which are both recursive. The C4.5 algorithm adds support for the continuous variables but the basic algorithm remains the same. We were more interested in implementing this algorithm for classification problems considering the first part of our project dealt with regression. </p>
+                        <hr/><br/>
+                        <h2>Building Trees</h2>
+                        <br/>
+                        <p>Both the algorithms we described above are greedy algorithms, which perform locally optimized solutions in the hope of generating a decision tree. The decision tree is built piece by piece by selecting the attribute which had the highest information gain value. Information gain as the name suggests is a measure of the importance of the attribute towards the understanding of the data. It can be measured by comparing the weighted impurity (which in our case is the Gini Impurity) of the child nodes to the impurity of the parent node, where <em>c</em> represents the number of children: </p>
 
-  <div class="splash-container">
-    <div class="splash">
-      <h1 class="splash-head">Machine Learning in Spark</h1>
-      <p class="splash-subhead">
-        Implementations and benchmarking of Ordinal Regression and Random
-        Forests from scratch using Apache Spark and pyspark.
-      </p>
-    </div>
-  </div>
+                        <div class="text-center"><img src="img/gini.gif"></img></div><br>
+                        <div class="text-center"><img src="img/ig.gif"></img></div>
 
-  <div class="content-wrapper">
-    <div class="content width-1">
-      <span class="pure-menu-heading is-center">Background</span>
-      <p>Here is some background which we will fill in for stuff. Then there are two
-        tabs below which hold the real content. Here is some background which we will fill in for stuff. Then there are two
-        tabs below which hold the real content. Here is some background which we will fill in for stuff. Then there are two
-        tabs below which hold the real content. Yippee!!
-      </p>
-    </div>
-    <div class="content is-center tab">
-      <span class="pure-menu pure-menu-horizontal is-center">
-        <ul class="pure-menu-list">
-          <li class="pure-menu-item pure-menu-selected"><a href="#ordreg" class="pure-menu-link">Ordinal Regression</a></li>
-          <li class="pure-menu-item pure-menu-selected"><a href="#rf" class="pure-menu-link">Random Forests</a></li>
-        </ul>
-      </span>
+                        <br><p>Since for entropy and the information gain we need to be be able to sum over all the classes efficiently. In case of continuous variables, the process of finding the entropy becomes tedious. This slows down the algorithm. Instead the columns which have continuous data have to be binned to create a discrete column. Once the columns have been discretized we are ready to go ahead and carry out training. We also modified the data to keep it in the form of MLib’s labeled point format and hence we always know the location of the target attribute.</p>
+                        <hr/><br/>
+                        <h2>ID3 Algorithm</h2>
+                        <br/>
+                        <p>The pseudocode for the ID3 algorithm is as follows:</p>
+                        <pre></br>
+                        ID3(instances, attributes):
+                        &#9;Create a new root node for the tree
+                        &#9;If all the instances of the target attribute are same(c):
+                        &#9;&#9;Return a tree with single root node with the value of the attribute(c)
+                        &#9;Else if attributes are empty:
+                        &#9;&#9;Return a tree with the value of the attribute(c) variable with the highest occurrence in the data
+                        &#9;Else:
+                        &#9;&#9;Find the attribute A which classifies best( highest information gain)
+                        &#9;&#9;For each value of the variable v belonging to A:
+                        &#9;&#9;&#9;Add a new ramification according to the value A = v
+                        &#9;&#9;&#9;Consider all the instances where A = v
+                        &#9;&#9;&#9;If the instances are empty:
+                        &#9;&#9;&#9;&#9;Add a new leaf node with the most common target attribute value.
+                        &#9;&#9;&#9;Else:
+                        &#9;&#9;&#9;&#9;Add the subtree given by ID3(instances, attributes)
+                        </pre><br/>
+                        <p>The tree continues building until the attributes run out or if the information gain after some point turns to be zero. In our case we save the tree as a nested dictionary.</p>
+                        <hr/><br>
+                        <h2>Building Random Forests</h2><br/>
+                        <p>To build random forests, we have to build multiple trees. Though we use multiple trees, we need to select only a few columns for building the trees since reducing the columns directly reduces the variance. The data used for training is not the original dataset and a bootstrapped form of the dataset. Hence the process of building trees involves bootstrapping and a randomized selection of columns. Once we have our bootstrapped data we can train our decision trees to get the desired models.<p>
+                        <hr/><br>
+                        <h2>Parallelizing Random Forests</h2>
+                        <p>Our basic intuition to parallelizing the problem was to think in two directions. The first method was to store the bootstrapped data in RDD’s and then parallelly create trees. This is a memory intensive method since we have a large amount of bootstrapped data in the RDD’s. This would allow spark workers to parallelly access all the bootstrapped data and create the decision trees. Unlike MLib we do not have an internal tree structure which does not have to be collected in Spark. Hence that will be our biggest cost in the algorithm.</p>
 
-      <div class="content width-1" id="ordreg">
-        ordreg
-      </div>
-      <div class="content width-1" id="rf">
-        haha!
-      </div>
-    </div>
-  </div>
+                        <p>The second method will be to build the tree by using actions and transformations. We managed to get a tree implementation working written only actions and transformations with a very small portion using python functions. The technique works fine for smaller datasets but it’s time consuming in the case of larger datasets. Hence we decided not to go with this approach even when it did have a lower memory footprint for the problem.</p>
 
-
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="hero-strip section-padding">
+        <div class="container">
+            <div class="col-md-12 text-center">
+                <h2>
+                Customise Sedna with the included <span class="sketch">Sketch <i class="version">3</i></span> file
+                </h2>
+                <p>Change/swap/edit every aspect of Sedna before you hit development with the included Sketch file.</p>
+                <a href="#" class="btn btn-ghost btn-accent btn-large">Download now!</a>
+                <div class="logo-placeholder floating-logo"><img src="img/sketch-logo.png" alt="Sketch Logo"></div>
+            </div>
+        </div>
+    </section>
+    <section class="blog-intro section-padding" id="blog">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Showcase your smashing product with Sedna</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12 leftcol">
+                    <h5>EXCLUSIVE TO CODROPS</h5>
+                    <p>Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12 rightcol">
+                    <h5>SPREADING PIXELS AROUND THE WORLD</h5>
+                    <p>Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="blog text-center">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <article class="blog-post">
+                        <figure>
+                            <a href="img/blog-img-01.jpg" class="single_image">
+                                <div class="blog-img-wrap">
+                                    <div class="overlay">
+                                        <i class="fa fa-search"></i>
+                                    </div>
+                                    <img src="img/blog-img-01.jpg" alt="Sedna blog image"/>
+                                </div>
+                            </a>
+                            <figcaption>
+                            <h2><a href="#" class="blog-category" data-toggle="tooltip" data-placement="top" data-original-title="See more posts">Product</a></h2>
+                            <p><a href="#" class="blog-post-title">Getting started with Sedna <i class="fa fa-angle-right"></i></a></p>
+                            </figcaption>
+                        </figure>
+                    </article>
+                </div>
+                <div class="col-md-4">
+                    <article class="blog-post">
+                        <figure>
+                            <a href="img/blog-img-02.jpg" class="single_image">
+                                <div class="blog-img-wrap">
+                                    <div class="overlay">
+                                        <i class="fa fa-search"></i>
+                                    </div>
+                                    <img src="img/blog-img-02.jpg" alt="Sedna blog image"/>
+                                </div>
+                            </a>
+                            <figcaption>
+                            <h2><a href="#" class="blog-category" data-toggle="tooltip" data-placement="top" data-original-title="See more posts">Technology</a></h2>
+                            <p><a href="#" class="blog-post-title">Why IE8 support is deminishing <i class="fa fa-angle-right"></i></a></p>
+                            </figcaption>
+                        </figure>
+                    </article>
+                </div>
+                <div class="col-md-4">
+                    <article class="blog-post">
+                        <figure>
+                            <a href="img/blog-img-03.jpg" class="single_image">
+                                <div class="blog-img-wrap">
+                                    <div class="overlay">
+                                        <i class="fa fa-search"></i>
+                                    </div>
+                                    <img src="img/blog-img-03.jpg" class="single_image" alt="Sedna blog image"/>
+                                </div>
+                            </a>
+                            <figcaption>
+                            <h2><a href="#" class="blog-category" data-toggle="tooltip" data-placement="top" data-original-title="See more posts">Product</a></h2>
+                            <p><a href="#" class="blog-post-title">Sedna tutorial: How to begin your <i class="fa fa-angle-right"></i></a></p>
+                            </figcaption>
+                        </figure>
+                    </article>
+                </div>
+                <a href="#" class="btn btn-ghost btn-accent btn-small">More news</a>
+            </div>
+        </div>
+    </section>
+    <section class="testimonial-slider section-padding text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="flexslider">
+                        <ul class="slides">
+                            <li>
+                                <div class="avatar"><img src="img/avatar.jpg" alt="Sedna Testimonial Avatar"></div>
+                                <h2>"Lorem ipsum dolor sit amet, nullam lucia nisi."</h2>
+                                <p class="author">Peter Finlan, Product Designer.</p>
+                            </li>
+                            <li>
+                                <div class="avatar"><img src="img/mani.jpg" alt="Sedna Testimonial Avatar"></div>
+                                <h2>"Nunc vel maximus purus. Nullam ac urna ornare."</h2>
+                                <p class="author">Manoela Ilic, Founder @ Codrops.</p>
+                            </li>
+                            <li>
+                                <div class="avatar"><img src="img/130.jpg" alt="Sedna Testimonial Avatar"></div>
+                                <h2>"Nullam ac urna ornare, ultrices nisl ut, lacinia nisi."</h2>
+                                <p class="author">Blaz Robar, Pixel Guru</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="sign-up section-padding text-center" id="download">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <h3>Get started with Sedna, absolutely free</h3>
+                    <p>Grab your copy today, exclusively from Codrops</p>
+                    <form class="signup-form" action="#" method="POST" role="form">
+                        <div class="form-input-group">
+                            <i class="fa fa-envelope"></i><input type="text" class="" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-input-group">
+                            <i class="fa fa-lock"></i><input type="text" class="" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn-fill sign-up-btn">Sign up for free</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="to-top">
+        <div class="container">
+            <div class="row">
+                <div class="to-top-wrap">
+                    <a href="#top" class="top"><i class="fa fa-angle-up"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="footer-links">
+                        <ul class="footer-group">
+                            <li><a href="#">Features</a></li>
+                            <li><a href="#">Pricing</a></li>
+                            <li><a href="#">Sign up</a></li>
+                            <li><a href="http://tympanus.net/codrops/licensing/">Licence</a></li>
+                            <li><a href="http://tympanus.net/codrops/">Codrops</a></li>
+                            <li><a href="http://www.peterfinlan.com/">Peter Finlan</a></li>
+                        </ul>
+                        <p>Copyright © 2015 <a href="#">Sedna</a><br>
+                        <a href="http://tympanus.net/codrops/licensing/">Licence</a> | Crafted with <span class="fa fa-heart pulse2"></span> by <a href="http://www.peterfinlan.com/">Peter Finlan</a>.</p>
+                    </div>
+                </div>
+                <div class="social-share">
+                    <p>Share Sedna with your friends</p>
+                    <a href="https://twitter.com/peterfinlan" class="twitter-share"><i class="fa fa-twitter"></i></a> <a href="#" class="facebook-share"><i class="fa fa-facebook"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+    <script src="bower_components/retina.js/dist/retina.js"></script>
+    <script src="js/jquery.fancybox.pack.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="js/jquery.flexslider-min.js"></script>
+    <script src="bower_components/classie/classie.js"></script>
+    <script src="bower_components/jquery-waypoints/lib/jquery.waypoints.min.js"></script>
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+    e.src='//www.google-analytics.com/analytics.js';
+    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+    ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+    </script>
 </body>
 </html>
