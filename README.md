@@ -18,4 +18,4 @@ For running the ordinal regression code, a small dataset (10K entries) has been 
 
 
 ---
-(c) 2015 Chainano, Malali, Spiegelberg
+(c) 2015 Chainani, Malali, Spiegelberg
