@@ -18,13 +18,13 @@ def main():
     parser.add_argument("--alpha",help="Step size for gradient descent", type=float)
     parser.add_argument("--func", help="Distribution choice for epsilon. \
                                         Can be norm for normal, log for logistic, \
-                                        or gumbel for gumbel")
+                                        ,gumbel for gumbel, or r_gumbel for reverse_gumbel")
     args=parser.parse_args()
     # Set default epochs to 1
     if args.epochs:
         epoch = args.epochs
     else:
-        epoch = 1
+        epoch = 5
 
     # Set default alpha to 0.05
     if args.alpha:
@@ -33,13 +33,16 @@ def main():
         alpha = 0.05
 
     # Set default distribution to normal
-    if args.func in ['log','gumbel']:
+    if args.func in ['log','gumbel','r_gumbel']:
         if args.func == 'log':
             func = log_cdf
-        else:
+        elif args.func == 'gumbel':
             func = gumbel_cdf
+        else:
+            func = r_gumbel_cdf
     else:
         func = sci.stats.norm.cdf
+
 
     #Initialize the Spark Context
     sc=pyspark.SparkContext()
@@ -87,15 +90,15 @@ def main():
 
     # Open up some files
     f1 = open("out.txt", "w")
-    f2 = open("theta.txt", "w")
 
     # Now we begin the parallelization!
 
     # set up parameters
-    alpha=0.05
     S=200
-    epoch=1
 
+
+    # turn Xrat into an RDD
+    xrat_rdd = sc.parallelize(Xrat)
     # Split the ratings into size S chunks
     split_xrat=np.split(Xrat,Xrat.shape[0]/S)
     #And then parallelize those chunks
@@ -104,11 +107,19 @@ def main():
     # then run the sgd!
 
     t=time.time()
-    ptheta=split_xrat.map(lambda subX:n_row_sgd(theta, subX, buckets, I, J, K, R, alpha, epoch, gradrll, func)).mean()
-    f1.write("Time taken:       "+str(time.time()-t)+"\n")
-    f1.write("Log likelihood:   "+ str(loglikelihood(ptheta, Xrat, buckets, I, J, K, R, func)))
-    f2.write(str(list(ptheta)))
-    f2.close()
+    ptheta = split_xrat.map(lambda subX:n_row_sgd(theta, subX, buckets, I, J, K, R, alpha, epoch, gradrll, func)).mean()
+
+    # then we predict (in parallel)
+    y_preds = xrat_rdd.map(lambda row: parallel_predict(ptheta, row, buckets, I, J, K)).collect()
+
+    print Xrat[:20,0]
+    print y_preds[:20]
+    print ptheta[:20]
+    # Write things to file
+    f1.write("Time (training):  "+ str(time.time()-t)+"\n")
+    f1.write("Log likelihood:   "+ str(loglikelihood(ptheta, Xrat, buckets, I, J, K, R, func))+"\n")
+    f1.write("Accuracy:         "+ str(accuracy(y_preds, Xrat))+"\n")
+    f1.write("RMSE:             "+ str(rmse(y_preds, Xrat)))
     f1.close()
 
 def loglikelihood(theta, Xrat, b, I, J, K, R, func):
@@ -131,17 +142,17 @@ def loglikelihood(theta, Xrat, b, I, J, K, R, func):
         a_i = theta[(I + J) * K + i]
         b_j = theta[(I + J) * K + I + j]
         g = theta[(I + J) * K + I + J]
-        beta = theta[(I + J) * K + I + J + 1:]
+        # beta = theta[(I + J) * K + I + J + 1:]
 
         # some asserts for the sizes
         assert len(u_i) == K
         assert len(v_j) == K
 
         # model using latent factors for user/item
-        model = np.dot(u_i, v_j)
+        # model = np.dot(u_i, v_j)
 
         # model using latent factors for user/item and biases
-        # model = np.dot(u_i, v_j) + a_i + b_j + g
+        model = np.dot(u_i, v_j) + a_i + b_j + g
 
         # edge conditions
         if rating == R:
@@ -171,23 +182,23 @@ def rowloglikelihood(theta, row, b, I, J, K, R, func):
     a_i = theta[(I + J) * K + i]
     b_j = theta[(I + J) * K + I + j]
     g = theta[(I + J) * K + I + J]
-    beta = theta[(I + J) * K + I + J + 1:]
+    # beta = theta[(I + J) * K + I + J + 1:]
 
     # some asserts for the sizes
     assert len(u_i) == K
     assert len(v_j) == K
 
     # model using latent factors for user/item
-    model = np.dot(u_i, v_j)
+    # model = np.dot(u_i, v_j)
 
     # model using latent factors for user/item and biases
-    # model = np.dot(u_i, v_j) + a_i + b_j + g
+    model = np.dot(u_i, v_j) + a_i + b_j + g
 
     # edge conditions
     if rating == R:
         return np.log(1 - func(b[rating - 2] + model))
     elif rating == 1:
-        return np.log(funcf(b[rating - 1] + model))
+        return np.log(func(b[rating - 1] + model))
     else:
         return np.log(func(b[rating - 1] + model) - func(b[rating - 2] + model))
 
@@ -199,6 +210,8 @@ def log_cdf(x):
 def gumbel_cdf(x):
     return np.exp(-np.exp(-x))
 
+def r_gumbel_cdf(x):
+    return gumbel_cdf(-x)
 
 # A function we pass to the array to calculate the updated thetas from each subarray
 def n_row_sgd(theta,subX, buckets, I, J, K, R, alpha, epoch, gradrll, func):
@@ -208,6 +221,42 @@ def n_row_sgd(theta,subX, buckets, I, J, K, R, alpha, epoch, gradrll, func):
             # update theta0 according to current row
             theta += alpha * gradrll(theta, row, buckets, I, J, K, R, func)
     return theta
+
+# given a testsample we derive the class via the latent variable
+def parallel_predict(theta, row, buckets, I, J, K):
+
+    rating = row[0]
+    i = row[1]
+    j = row[2]
+
+     # extract the model for the latent variable
+    u_i = theta[K * i:K*(i+1)]
+    v_j = theta[(I + j) * K:(I + j + 1) * K]
+    a_i = theta[(I + J) * K + i]
+    b_j = theta[(I + J) * K + I + j]
+    g   = theta[(I + J) * K + I + J]
+
+    # some asserts for the sizes
+    assert len(u_i) == K
+    assert len(v_j) == K
+
+    model = np.dot(u_i, v_j) + a_i + b_j + g
+    Y = -model
+
+    # predict y based on where it lies within the buckets
+    return np.sum(Y > buckets) + 1
+
+def accuracy(y_preds, Xrat):
+    # get the ratings
+    ratings = Xrat[:,0]
+    assert len(y_preds) == len(ratings)
+    return np.sum(y_preds == ratings)/float(len(y_preds))
+
+def rmse(y_preds, Xrat):
+    # get the ratings
+    ratings = Xrat[:,0]
+    assert len(y_preds) == len(ratings)
+    return np.sqrt(np.mean((ratings-y_preds)**2))
 
 if __name__ == "__main__":
     main()
