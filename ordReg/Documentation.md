@@ -44,7 +44,7 @@ The cumulative model (or threshold model) can be deviated assuming a latent, und
 The link between those variables shall be modelled through
 $$ \lbrace Y = r \rbrace = \lbrace \theta_{r-1} < \tilde{Y} \leq \theta_r \rbrace$$
 for $-\infty = \beta_0 < \beta_1 < ... < \beta_{R-1} < \beta_R = +\infty$
-For the latent variable a linear regression model<font color='red'>add here footnote: Sometimes this also modelled as $$ \tilde{Y} = x^Tw + \epsilon $$ leading to different signs in the cdf. However, semantically both approaches are equivalent.</font> with $x, w \in \mathbb{R^n}$ and a random variable $\epsilon$ is choosen:
+For the latent variable a linear regression model*(Sometimes this also modelled as $$ \tilde{Y} = x^Tw + \epsilon $$ leading to different signs in the cdf. However, semantically both approaches are equivalent)* with $x, w \in \mathbb{R^n}$ and a random variable $\epsilon$ is choosen:
 
 $$ \tilde{Y} = - x^Tw + \epsilon $$
 It follows that

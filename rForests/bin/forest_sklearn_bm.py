@@ -35,7 +35,7 @@ for k in range(len(col_names)):
     type_dict[col_names[k]] = type_list[k]
 
 #Reading in data
-data = pd.read_table('../data/covtype.data',sep=',',names=col_names,\
+data = pd.read_table('../data/covtype.csv',sep=',',names=col_names,\
         dtype=type_dict)
 
 #Splitting into attributes for training and response variables

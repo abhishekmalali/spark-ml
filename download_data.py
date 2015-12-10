@@ -63,7 +63,7 @@ def download_file(file_url, cache_path, filename):
 
 def main():
 	# first create cache directory if it does not exist
-	cache_path = os.path.join('.', 'cache')
+	cache_path = os.path.join('.', 'rForests', 'data')
 	create_dir(cache_path)
 
 	# download random forest file
