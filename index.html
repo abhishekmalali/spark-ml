@@ -20,6 +20,13 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     <script type="text/javascript" src="http://latex.codecogs.com/latexit.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"/>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+</script>
+
 
 </head>
 <body id="top">
@@ -45,7 +52,7 @@
                 <div class="col-md-10 col-md-offset-1">
                     <div class="hero-content text-center">
                         <h1>Machine Learning in Spark</h1>
-                        <p class="intro">Implementations and benchmarking of Ordinal Regression and Random Forests from scratch using Apache Spark and pyspark.</p>
+                        <p class="intro">Apache Spark is a big data processing engine that </p>
                         <a href="#intro" class="btn btn-large">Let's get started</a>
                     </div>
                 </div>
@@ -53,7 +60,7 @@
         </div>
         <div class="down-arrow floating-arrow"><a href="#intro"><i class="fa fa-angle-down"></i></a></div>
     </section>
-    <section class="features section-padding" id="intro">
+    <section class="features-extra section-padding" id="intro">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -75,7 +82,7 @@
         </div>
         <div class="responsive-feature-img"><img src="img/devices.png" alt="responsive devices"></div>
     </section>
-    <section class="features-extra section-padding" id="rf">
+    <section class="features-three section-padding" id="rf">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -132,95 +139,13 @@
             </div>
         </div>
     </section>
-    <section class="hero-strip section-padding">
+    <section class="features section-padding" id="ordreg">
         <div class="container">
-            <div class="col-md-12 text-center">
-                <h2>
-                Customise Sedna with the included <span class="sketch">Sketch <i class="version">3</i></span> file
-                </h2>
-                <p>Change/swap/edit every aspect of Sedna before you hit development with the included Sketch file.</p>
-                <a href="#" class="btn btn-ghost btn-accent btn-large">Download now!</a>
-                <div class="logo-placeholder floating-logo"><img src="img/sketch-logo.png" alt="Sketch Logo"></div>
-            </div>
-        </div>
-    </section>
-    <section class="blog-intro section-padding" id="blog">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Showcase your smashing product with Sedna</h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-12 col-xs-12 leftcol">
-                    <h5>EXCLUSIVE TO CODROPS</h5>
-                    <p>Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                </div>
-                <div class="col-md-6 col-sm-12 col-xs-12 rightcol">
-                    <h5>SPREADING PIXELS AROUND THE WORLD</h5>
-                    <p>Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="blog text-center">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-4">
-                    <article class="blog-post">
-                        <figure>
-                            <a href="img/blog-img-01.jpg" class="single_image">
-                                <div class="blog-img-wrap">
-                                    <div class="overlay">
-                                        <i class="fa fa-search"></i>
-                                    </div>
-                                    <img src="img/blog-img-01.jpg" alt="Sedna blog image"/>
-                                </div>
-                            </a>
-                            <figcaption>
-                            <h2><a href="#" class="blog-category" data-toggle="tooltip" data-placement="top" data-original-title="See more posts">Product</a></h2>
-                            <p><a href="#" class="blog-post-title">Getting started with Sedna <i class="fa fa-angle-right"></i></a></p>
-                            </figcaption>
-                        </figure>
-                    </article>
-                </div>
-                <div class="col-md-4">
-                    <article class="blog-post">
-                        <figure>
-                            <a href="img/blog-img-02.jpg" class="single_image">
-                                <div class="blog-img-wrap">
-                                    <div class="overlay">
-                                        <i class="fa fa-search"></i>
-                                    </div>
-                                    <img src="img/blog-img-02.jpg" alt="Sedna blog image"/>
-                                </div>
-                            </a>
-                            <figcaption>
-                            <h2><a href="#" class="blog-category" data-toggle="tooltip" data-placement="top" data-original-title="See more posts">Technology</a></h2>
-                            <p><a href="#" class="blog-post-title">Why IE8 support is deminishing <i class="fa fa-angle-right"></i></a></p>
-                            </figcaption>
-                        </figure>
-                    </article>
-                </div>
-                <div class="col-md-4">
-                    <article class="blog-post">
-                        <figure>
-                            <a href="img/blog-img-03.jpg" class="single_image">
-                                <div class="blog-img-wrap">
-                                    <div class="overlay">
-                                        <i class="fa fa-search"></i>
-                                    </div>
-                                    <img src="img/blog-img-03.jpg" class="single_image" alt="Sedna blog image"/>
-                                </div>
-                            </a>
-                            <figcaption>
-                            <h2><a href="#" class="blog-category" data-toggle="tooltip" data-placement="top" data-original-title="See more posts">Product</a></h2>
-                            <p><a href="#" class="blog-post-title">Sedna tutorial: How to begin your <i class="fa fa-angle-right"></i></a></p>
-                            </figcaption>
-                        </figure>
-                    </article>
-                </div>
-                <a href="#" class="btn btn-ghost btn-accent btn-small">More news</a>
+            <div class="col-md-12">
+              <h1>Ordinal Regression</h1>
+              <p>In order to model categorical data there are two possible approaches: multinomial logistic regression, and ordinal regression. Either of these models are an extension of the famous binary logistic regression model to allow multiple labels instead of two only.</p>
+              <p>In Multinomial logistic regression the dependent variable $Y$ is modelled taking values in category $$c = c_1, ..., c_C$$  via</p>
+
             </div>
         </div>
     </section>
@@ -228,53 +153,6 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="flexslider">
-                        <ul class="slides">
-                            <li>
-                                <div class="avatar"><img src="img/avatar.jpg" alt="Sedna Testimonial Avatar"></div>
-                                <h2>"Lorem ipsum dolor sit amet, nullam lucia nisi."</h2>
-                                <p class="author">Peter Finlan, Product Designer.</p>
-                            </li>
-                            <li>
-                                <div class="avatar"><img src="img/mani.jpg" alt="Sedna Testimonial Avatar"></div>
-                                <h2>"Nunc vel maximus purus. Nullam ac urna ornare."</h2>
-                                <p class="author">Manoela Ilic, Founder @ Codrops.</p>
-                            </li>
-                            <li>
-                                <div class="avatar"><img src="img/130.jpg" alt="Sedna Testimonial Avatar"></div>
-                                <h2>"Nullam ac urna ornare, ultrices nisl ut, lacinia nisi."</h2>
-                                <p class="author">Blaz Robar, Pixel Guru</p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="sign-up section-padding text-center" id="download">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <h3>Get started with Sedna, absolutely free</h3>
-                    <p>Grab your copy today, exclusively from Codrops</p>
-                    <form class="signup-form" action="#" method="POST" role="form">
-                        <div class="form-input-group">
-                            <i class="fa fa-envelope"></i><input type="text" class="" placeholder="Enter your email" required>
-                        </div>
-                        <div class="form-input-group">
-                            <i class="fa fa-lock"></i><input type="text" class="" placeholder="Enter your password" required>
-                        </div>
-                        <button type="submit" class="btn-fill sign-up-btn">Sign up for free</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="to-top">
-        <div class="container">
-            <div class="row">
-                <div class="to-top-wrap">
-                    <a href="#top" class="top"><i class="fa fa-angle-up"></i></a>
                 </div>
             </div>
         </div>
