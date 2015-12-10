@@ -1,5 +1,5 @@
-from collections import Counter
-from collections import defaultdict
+#from collections import Counter
+#from collections import defaultdict
 import numpy as np
 """
 This module holds functions that are responsible for creating a new
@@ -156,11 +156,11 @@ def classify_rf(data, tree_list, columns):
             res.append(get_classification(data,tree,columns))
         except:
             continue
-    
+    """
     result = Counter(res)
     return result.most_common(1)[0][0]
     """  
     (values,counts) = np.unique(res,return_counts=True)
     ind=np.argmax(counts)
     return values[ind]
-    """
+    

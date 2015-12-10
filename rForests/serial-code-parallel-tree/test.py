@@ -1,9 +1,9 @@
 # Starting spark
 #Only use locally
 
+
 import findspark
 findspark.init()
-
 import pyspark
 sc = pyspark.SparkContext()
 import numpy as np
@@ -86,7 +86,7 @@ print "Accuracy:", 100*(res_rdd.filter(lambda x:x[0] == x[1]).count())/float(res
 import csv
 import itertools
 data = []
-num_rows = 40000;
+num_rows = 4000;
 row_num = 0
 with open('../data/covtype.csv', 'rb') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
@@ -113,7 +113,7 @@ columns_data = list(itertools.chain(*names))
 data_train = discretize(data,range(10))
 #Creating an RDD with bootstrapped data
 # n is number of trees in our forest
-n=25
+n=10
 length=len(data_train)
 #forest=[data_train]
 #Checking length
