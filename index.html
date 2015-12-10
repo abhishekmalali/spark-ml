@@ -35,7 +35,7 @@
       margin-left: auto;
       margin-right: auto;
       height: 300px;
-    }
+    } 
     </style>
 </head>
 <body id="top">
@@ -77,10 +77,14 @@
                   <h1 style="text-align:center;">Introduction</h1>
                   <br/>
                   <p>Spark is a burgeoning big data processing framework that is known to offer fast performance and intuitiveness, through its innovative use of distributed dats structures known as RDDs. On top of Spark sits a library called <em>MLib</em> hosts a wide variety of machine learning algorithms that can be run parallelly on the RDDs. In this project, we chose to tackle two machine learning methods to write: random forests, and ordinal regression. Random forests currently exists within Spark's <em>MLib</em>, but we wanted to see if we could write an implementation that would surpass the performance of <em>MLib</em>'s version. Ordinal regression, however, does not exist in <em>MLib</em>. We took it upon ourselves to write both of these algorithms in Spark by leveraging its parallel functionality.</p>
+                    
                   </p>
+                  
                 </div>
+               <p align="center"><iframe width="560" height="315" align="middle" src="https://www.youtube.com/embed/YT75Pzp_FF0" frameborder="0" allowfullscreen></iframe></p>
             </div>
-        </div>
+        </div> 
+
         <div class="device-showcase">
             <div class="devices">
                 <div class="ipad-wrap wp1"></div>
@@ -139,8 +143,11 @@
                         <h2>Parallelizing Random Forests</h2>
                         <p>Our basic intuition to parallelizing the problem was to think in two directions. The first method was to store the bootstrapped data in RDD’s and then parallelly create trees. This is a memory intensive method since we have a large amount of bootstrapped data in the RDD’s. This would allow spark workers to parallelly access all the bootstrapped data and create the decision trees. Unlike MLib we do not have an internal tree structure which does not have to be collected in Spark. Hence that will be our biggest cost in the algorithm.</p>
 
+                        <img src="img/RF-parallel-1.png" class="image"/>
+                        <p></p>
                         <p>The second method will be to build the tree by using actions and transformations. We managed to get a tree implementation working written only actions and transformations with a very small portion using python functions. The technique works fine for smaller datasets but it’s time consuming in the case of larger datasets. Hence we decided not to go with this approach even when it did have a lower memory footprint for the problem.</p>
-
+                        <img src="img/RF-parallel-2.png" class="image"/>
+                        <p></p>
                     </div>
                 </div>
             </div>
