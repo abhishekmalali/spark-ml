@@ -20,14 +20,12 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     <script type="text/javascript" src="http://latex.codecogs.com/latexit.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"/>
     <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-    });
-</script>
-
-
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
 </head>
 <body id="top">
     <!--[if lt IE 8]>
@@ -52,7 +50,8 @@
                 <div class="col-md-10 col-md-offset-1">
                     <div class="hero-content text-center">
                         <h1>Machine Learning in Spark</h1>
-                        <p class="intro">Apache Spark is a big data processing engine that </p>
+                        <p class="intro">Implementations and benchmarking of Ordinal Regression and Random
+                        Forests from scratch using Apache Spark and pyspark.</p>
                         <a href="#intro" class="btn btn-large">Let's get started</a>
                     </div>
                 </div>
@@ -66,10 +65,7 @@
                 <div class="col-md-12">
                   <h1 style="text-align:center;">Introduction</h1>
                   <br/>
-                  <p>Here is some background which we will fill in for stuff. Then there are two
-                    tabs below which hold the real content. Here is some background which we will fill in for stuff. Then there are two
-                    tabs below which hold the real content. Here is some background which we will fill in for stuff. Then there are two
-                    tabs below which hold the real content. Yippee!!
+                  <p>Spark is a burgeoning big data processing framework that is known to offer fast performance and intuitiveness, through its innovative use of distributed dats structures known as RDDs. On top of Spark sits a library called <em>MLib</em> hosts a wide variety of machine learning algorithms that can be run parallelly on the RDDs. In this project, we chose to tackle two machine learning methods to write: random forests, and ordinal regression. Random forests currently exists within Spark's <em>MLib</em>, but we wanted to see if we could write an implementation that would surpass the performance of <em>MLib</em>'s version. Ordinal regression, however, does not exist in <em>MLib</em>. We took it upon ourselves to write both of these algorithms in Spark by leveraging its parallel functionality.</p>
                   </p>
                 </div>
             </div>
@@ -104,7 +100,7 @@
 
                         <br><p>Since for entropy and the information gain we need to be be able to sum over all the classes efficiently. In case of continuous variables, the process of finding the entropy becomes tedious. This slows down the algorithm. Instead the columns which have continuous data have to be binned to create a discrete column. Once the columns have been discretized we are ready to go ahead and carry out training. We also modified the data to keep it in the form of MLib’s labeled point format and hence we always know the location of the target attribute.</p>
                         <hr/><br/>
-                        <h2>ID3 Algorithm</h2>
+                        <h3>ID3 Algorithm</h3>
                         <br/>
                         <p>The pseudocode for the ID3 algorithm is as follows:</p>
                         <pre></br>
@@ -142,17 +138,118 @@
     <section class="features section-padding" id="ordreg">
         <div class="container">
             <div class="col-md-12">
-              <h1>Ordinal Regression</h1>
-              <p>In order to model categorical data there are two possible approaches: multinomial logistic regression, and ordinal regression. Either of these models are an extension of the famous binary logistic regression model to allow multiple labels instead of two only.</p>
-              <p>In Multinomial logistic regression the dependent variable $Y$ is modelled taking values in category $$c = c_1, ..., c_C$$  via</p>
+              <h1>Ordinal Regression</h1><br>
+              <p>In order to model categorical data, there are two possible approaches: multinomial logistic regression, and ordinal regression. Both of these models extend the popular binary logistic regression to include more than two variables.</p>
+              <p>In Multinomial logistic regression, the dependent variable $Y$ is modelled taking values in category $c = c_1, ..., c_C$  via $$ \mathbb{P}(Y_i = c_j) = \frac{\exp(\beta_K X_i)}{1 + \sum_{k=1}^K \exp(\beta_k X_i)}$$ Both sklearn and Mlib implement this approach to some extent. That is, sklearn can handle multinomial logistic regression, but uses a lbfgs or newton-cg approach only (no sgd) with support for L2 regularization solely. In Mlib, however, multinomial logistic regression is not always the best model to choose. In the case of ratings, the categories represent ordinal values implying some kind of natural order. In a multinomial logistic regression model this order is not considered, and thus it neglects to differentiate between a '5' from a '4'.</p>
+              <p>To make up for this missing order, we will explore ordinal regression. </p>
+              <hr/><br/>
+              <h2>Types of Models</h2>
+              <br/>
+              <p>Suppose we are given a response captured by a random variable $Y \in \mathbb{R}$ which, with no loss of generality, can be divided into $K$ different categories $\lbrace 1, ..., R \rbrace $ and can maintain their natural order. Furthermore, the sum of the probabilities of each of the categories equals one.We model the ordinal regression model using binary variables $y_1, ..., y_R$ (i.e. $y_r \sim \mathrm{Ber}(p_r))$, which will be used to transform an ordinal response variable into a binary response. This way, ordinal regression can be seen as an extension to a classical, binary variable model.</p>
+              <p>For the transformation of the ordinal response to a binary one, there are three different, commonly used approaches(let $r =1, ..., R$):</p>
+              <p>- Cumulative model:
+                  $$ y_r = \begin{cases}1 \quad \quad Y \in \lbrace 1, ..., r \rbrace \\ 0 \quad \quad Y \in \lbrace r+1, ..., K\rbrace\end{cases}$$</p>
+              <p>- Sequential model:
+                  $$ y_r\vert_{\lbrace Y \geq r \rbrace} = \begin{cases}1 \quad \quad Y =r \,\vert\, Y \geq r \\ 0 \quad \quad Y >r \,\vert\, Y \geq r \end{cases}$$</p>
+              <p>- Adjacent model:
+                  $$ y_r\vert_{\lbrace Y \in \lbrace r, r+1\rbrace \rbrace} = \begin{cases}1 \quad \quad Y = r \,\vert\, Y \in \lbrace r, r+1\rbrace \\ 0 \quad \quad Y = r+1 \,\vert\, Y \in \lbrace r, r+1\rbrace \end{cases}$$ </p>
+              <p>The most versatile model of these is the cumulative assuming nothing in particular about the data except the ordinal regression assumptions. The sequential model might be used to model variables for which higher values are more likely to be reached if the lower ones have already occured. A similar argumentation holds for the adjacent model with neighbors.</p>
+              <br/>
+              <h3>Cumulative model</h3>
+              <br/>
+              <p>The cumulative model (or threshold model) can be deviated assuming a latent, underlying r.v. $\tilde{Y}$ for which the actual, observed variable $Y$ can be seen as somehow rounded.</p>
 
+              <p>The link between those variables shall be modelled through
+              $$ \lbrace Y = r \rbrace = \lbrace \theta_{r-1} < \tilde{Y} \leq \theta_r \rbrace$$
+              for $-\infty = \beta_0 < \beta_1 < ... < \beta_{R-1} < \beta_R = +\infty$
+              For the latent variable a linear regression model with $x, w \in \mathbb{R^n}$ and a random variable $\epsilon$ is choosen:
+              $$ \tilde{Y} = - x^Tw + \epsilon $$
+              <p>It follows that</p>
+              $$ \mathbb{P}(y_r = 1 \vert x, w) = \mathbb{P}(Y \leq r \vert x, w) = \mathbb{P}(-x^Tw + \epsilon \leq \beta_r) = \mathbb{P}(\epsilon \leq \beta_r + x^Tw) = F_\epsilon(\beta_r + x^Tw)$$
+
+              $$ \implies \mathbb{P}(Y = r) = F_\epsilon(\beta_r + x^Tw) - F_\epsilon(\beta_{r-1} + x^Tw)$$
+              <p>using the cdf $F_\epsilon$ of $\epsilon$.</p>
+
+              <p>In the model setup the only thing left to define is what distribution to assume/choose for $\epsilon$. Some possible choices which yield different popular models are: thecumulative logit distribution ($ \epsilon \sim \mathrm{Logistic}(0,1)$), the probit distribution($\epsilon \sim \mathcal{N} (0, 1)$), the maximum extreme-value distribution ($ \epsilon \sim \mathrm{Gumbel}(0, 1)$), and the minimum extreme-value distribution: $ -\epsilon \sim \mathrm{Gumbel}(0, 1)$).
+             </p>
+             <img src = "img/epsdf.png" alt="Distributions" class="image"/>
+             <p>Whereas the probit and logit model are a good choice for symmetric errors, the Gumbel and reversed Gumbel distribution can be used for the case of asymmetric error distributions to provide a better fit. For many cases, a certain asymetry regarding the error is quite natural.</p>
+             <br/>
+              <h2>Fitting the model</h2>
+              <br>
+              <p>
+              Assume we are given $N$ datapoints $(Y_1, X_1), ..., (Y_N, X_N)$ with $Y_i \in \lbrace 1, ..., R \rbrace, \quad X_i \in \mathbb{R}^L$ (independence assumption as usual). We simplify the fitting process, by using predefined boundaries $\beta$. Of course it is also possible to put a prior on $\beta$ and include it in the optimization approach but to do so, additional constraints need to be satisfied (i.e. $-\infty = \beta_0 < 1 < \beta_1 < 2 < ... < \beta_{R-1} < R < \beta_R = \infty$).</p>
+              <p>
+              One easy way to define the bounds is to use the middle, i.e.
+              $\beta_r = r - 0.5 \quad \text{for} \quad r = 1, ..., R-1$.
+              Then, the log likelihood function of the data $\mathcal{D} = \lbrace (Y_1, X_1), ..., (Y_N, X_N) \rbrace$ is given as
+
+              $$ \mathcal{L}(w \; \vert \; \mathcal{D}, \beta) = \sum_{n=1}^N \log \left( F_\epsilon(\beta_{Y_n} + X_n^T w) - F_\epsilon(\beta_{Y_n-1} + X_n^Tw) \right)$$
+            </p>
+              <p>This allows us to derive a Maximum Likelihood for the model.
+
+              $$ \hat{w}_{\mathrm{MLE}} = \underset{w}{\operatorname{argmax}} \mathcal{L}(w \; \vert \; \mathcal{D}, \beta)$$
+
+              We can also estimate the Maximum a posterior (MAP). The MAP estimate can be derived by ignoring the normalization constant (cf. properties of an argmax) as
+              $$ \hat{w}_{\mathrm{MAP}} = \underset{w}{\operatorname{argmax}} \mathcal{L}(w \; \vert \; \mathcal{D}, \beta) + \log f_w(w)$$
+
+              with $f_w$ being the pdf of the choosen prior distribution for $w$. Popular choices are:</p>
+
+            <p>- Ridge regression: $w \sim \mathcal{N}(0, \tau I)\quad \quad$  (Gaussian prior with diagonal matrix)</p>
+            <p>- LASSO regression: $w_i \sim \mathrm{Laplace}(0, \tau)\quad \quad$  (Laplace prior, indep. components)</p>
+            <br/>
+            <h2>Implementation</h2>
+            <br/>
+            <p>One way to solve the optimization problem is to use stochastic gradient descent. This was chosen over other gradient descent methods such as conjugate-gradient and l-bfgs because for huge amounts of data, the others require either a small step size or an excessive amount of memory. Especially in Machine Learning applications stochastic gradient descent has become one of the default algorithms and was choosen here.</p>
+
+            <p>Stochastic gradient descent can be parallelized as described in the <a href="http://www.research.rutgers.edu/~lihong/pub/Zinkevich11Parallelized.pdf">famous paper </a> by Zinkevich. In the paper, the authors suggest a simple algorithm which shuffles the data in the array randomly. To optimize the process, each node should node the same amount of data and the gradient is computed over all data. Thus the 'stochasticness' is done mainly in the shuffle step. After each round computation results are aggregated by average.</p>
+
+            <p>Though this algorithm intuitively seems to be quite straightforward, the question was open until the paper has been released whether this approach is optimal. In the paper a proof is given that this method converges. Given that there does not exist any parallelization strategy that is able to gain more speedup, the parallelized stochastic gradient is optimal.</p>
+
+            <p>However, this is a theoretical result. In our implementation we wanted to see what kind of speedup we could achieve using Spark, and which model gives best accuracy at lowest computational cost.</p>
+            <br/>
+            <h3>Computing the gradient</h3>
+            <br/>
+            <p>One one the critical steps in any numerical optimization routine is the gradient which is the component that takes most time to evaluate. In our implementation we used autograd (https://github.com/HIPS/autograd), a handy python package for automatic differentation. Especially in the case of ordinal regression, depending on which model has been choosen to present the latent variabel $\tilde{Y}$, the gradient might be not trivially deviated.</p>
+            <h3>General Gradient</h3>
+            <p>Here, an outline of computing the gradient of a simple model given $n$ datapoints is given:
+            $$
+            \begin{split}
+            \frac{\partial \mathcal{L}(w \;\vert\; \mathcal{D}, \beta )}{\partial w_j} &= \frac{\partial}{\partial w_j} \sum_{i=1}^n \log \left( F_\epsilon\left( \beta_{Y_i}  + X_i^Tw \right) - F_\epsilon\left( \beta_{Y_i - 1}  + X_i^Tw \right) \right) \\
+            &= \sum_{i=1}^n \frac{\partial}{\partial w_j} \log \left( F_\epsilon\left( \beta_{Y_i}  + X_i^Tw \right) - F_\epsilon\left( \beta_{Y_i - 1}  + X_i^Tw \right) \right) \\
+            &= \sum_{i=1}^n  \frac{\frac{\partial}{\partial w_j}\left[ F_\epsilon\left( \beta_{Y_i}  + X_i^Tw \right) - F_\epsilon\left( \beta_{Y_i - 1}  + X_i^Tw \right) \right]}{F_\epsilon\left( \beta_{Y_i}  + X_i^Tw \right) - F_\epsilon\left( \beta_{Y_i - 1}  + X_i^Tw \right)} \\
+            &= \sum_{i=1}^n  \frac{f_\epsilon\left( \beta_{Y_i}  + X_i^Tw \right)X_{i,j} - f_\epsilon\left( \beta_{Y_i - 1}  + X_i^Tw \right)X_{i,j}}{F_\epsilon\left( \beta_{Y_i}  + X_i^Tw \right) - F_\epsilon\left( \beta_{Y_i - 1}  + X_i^Tw \right)} \\
+            &= \sum_{i=1}^n  \frac{f_\epsilon\left( \beta_{Y_i}  + X_i^Tw \right) - f_\epsilon\left( \beta_{Y_i - 1}  + X_i^Tw \right)}{F_\epsilon\left( \beta_{Y_i}  + X_i^Tw \right) - F_\epsilon\left( \beta_{Y_i - 1}  + X_i^Tw \right)}X_{i,j} \\
+            &= \sum_{i=1}^n  g(\beta, X_i, Y_i)X_{i,j} \\
+            \end{split}
+            $$
+            With $X_{i,j}$ being the $j$-th component of the vector $X_i$ and $f_\epsilon$ being the density of $\epsilon$.</p>
+            <br/>
+            <h2>Analysis</h2>
+            <br/>
+            <p>As adding a prior add only a constant time factor to the model computation, for our analysis we did not focus whether the model produced actual, meaningful values (which might requires several hours - days to train for) but instead how the performance for a small subsample (2000 samples) behaved for each error type. Also, as we used more variables than data points extreme overfitting was taken into account. Thus, though not completely correct we can at some point roughly take accuracy / RMSE as some sort of measure of how fast a model adjusts.</p>
+            <img src="img/time.png" class="image"/>
+            <p>For our testsample, logistic and gumbel errors seemed to perform best in terms of fitting times. A look at the time spent per epoch underscores this:</p>
+            <img src="img/timeperepoch.png" class="image"/>
+            <p>It is also worth noting thatthe time per epoch increases for all error distributions when the number of epochs increase. This might be due to amortization of the Spark overhead and also internal Spark caching effects.</p>
+            <img src="img/accuracy.png" class="image"/>
+            <p>Though in terms of speed the gumbel distribution seemed to be favorable, a quick a look at the accuracy reveals that the other models matched for the given data better. Our recommendation is therefore to use as a first start a logistic ordinal regression model. However if information about the data or its errors are known it might be a good idea to fit a Gumbel distribution as its evaluation is faster than the logistic one which might be to due to the lack of the division operator.</p>
+            <br/>
             </div>
         </div>
     </section>
     <section class="testimonial-slider section-padding text-center">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+              <h1 style="text-align:center;">Team</h1>
+                <div class="col-md-4">
+                  <h4>Neil Chainani</h4>
+                </div>
+                <div class="col-md-4">
+                  <h4>Abhishek Malali</h4>
+                </div>
+                <div class="col-md-4">
+                  <h4>Leonhard Spiegelberg</h4>
                 </div>
             </div>
         </div>
@@ -160,7 +257,7 @@
     <footer>
         <div class="container">
             <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-12">
                     <div class="footer-links">
                         <ul class="footer-group">
                             <li><a href="#">Features</a></li>
@@ -174,30 +271,14 @@
                         <a href="http://tympanus.net/codrops/licensing/">Licence</a> | Crafted with <span class="fa fa-heart pulse2"></span> by <a href="http://www.peterfinlan.com/">Peter Finlan</a>.</p>
                     </div>
                 </div>
-                <div class="social-share">
-                    <p>Share Sedna with your friends</p>
-                    <a href="https://twitter.com/peterfinlan" class="twitter-share"><i class="fa fa-twitter"></i></a> <a href="#" class="facebook-share"><i class="fa fa-facebook"></i></a>
-                </div>
             </div>
         </div>
     </footer>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
-    <script src="bower_components/retina.js/dist/retina.js"></script>
     <script src="js/jquery.fancybox.pack.js"></script>
     <script src="js/vendor/bootstrap.min.js"></script>
     <script src="js/scripts.js"></script>
-    <script src="js/jquery.flexslider-min.js"></script>
-    <script src="bower_components/classie/classie.js"></script>
-    <script src="bower_components/jquery-waypoints/lib/jquery.waypoints.min.js"></script>
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-    <script>
-    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-    e.src='//www.google-analytics.com/analytics.js';
-    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-    ga('create','UA-XXXXX-X','auto');ga('send','pageview');
-    </script>
+
 </body>
 </html>
