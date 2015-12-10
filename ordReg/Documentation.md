@@ -145,3 +145,139 @@ $$
 $$
 With $X_{i,j}$ being the $j$-th component of the vector $X_i$ and $f_\epsilon$ being the density of $\epsilon$
 
+## Analysis
+As adding a prior add only a constant time factor to the model computation, for our analysis we did not focus whether the model produced actual, meaningful values (which might requires several hours - days to train for) but instead how the performance for a small subsample (2000 samples) behaved for each error type. Also, as we used more variables than data points extreme overfitting was taken into account. Thus, though not completely correct we can at some point roughly take accuracy / RMSE as some sort of measure of how fast a model adjusts.
+![total time](img/time.png)
+For our testsample logistic and gumbel errors seemed to perform best in terms of fitting times. A look at the time spent per epoch underscores this
+![time per epoch](img/timeperepoch.png)
+Worth to note is also that the time per epoch increases for all error distributions when the number of epochs increase. This might be due to amortization of the Spark overhead and also internal Spark caching effects.
+![accuracy](img/accuracy.png)
+Though in terms of speed the gumbel distribution seemed to be favorable, a quick a look at the accuracy reveals that the other models matched for the given data better. Our recommendation is therefore to use as a first start a logistic ordinal regression model. However if information about the data or its errors are known it might be a good idea to fit a Gumbel distribution as its evaluation is faster than the logistic one which might be to due to the lack of the division operator.
+
+## A more versatile model to model ratings
+In the following, a general model is developed to model ratings which are one of the areas that ordinal regression is made for. Therefore, the following variables are introduced
+<table>
+<tr>
+<td><b>variable</b></td><td><b>meaning</b></td>
+</tr>
+<tr>
+<td>$N$</td><td>number of data samples $n=1, ..., N$</td>
+</tr>
+<tr>
+<td>$K$</td><td>number of latent variables per user and item</td>
+</tr>
+<tr>
+<td>$L$</td><td>number of features describing each item</td>
+</tr>
+<tr>
+<td>$I$</td><td>number of users, i.e. we have users $i = 1, ..., I$</td>
+</tr>
+<tr>
+<td>$J$</td><td>number of items, i.e. $j = 1, ..., J$</td>
+</tr>
+<tr>
+<td>$\mathcal{D}$</td><td>data matrix consisting of $N$ rows $D_n$</td>
+</tr>
+<tr>
+<td>$\mathcal{X}$</td><td>feature data matrix consisting of $J$ rows $X_n$</td>
+</tr>
+<tr>
+<td>$X_n$</td><td>$n$th data row, i.e $X_n = (X_{n, 1}, ..., , X_{n, L})^T$ with $X_{n,l} \in \mathbb{R}$</td>
+</tr>
+<tr>
+<td>$D_n$</td><td>$n$th data row, i.e $D_n = (r_n, i_n, j_n)^T$ with $r_n \in \lbrace 1, ..., R\rbrace$ being a rating, $i_n, j_n$ being indices adressing a user and a item</td>
+</tr>
+<tr>
+<td>$R$</td><td>number of ratings, i.e. each rating $r$ has to be $\in \lbrace 1, ..., R \rbrace$</td>
+</tr>
+<tr>
+<td>$\beta$</td><td>vector describing the buckets, i.e. $-\infty = \beta_0 < 1 < \beta_1 < ... < \beta_{R-1} < R < \beta_R = \infty$</td>
+</tr>
+</table>
+Define now the model using the ordinal regression approach with a latent variable
+
+$$\tilde{Y}_{i, j} = - \left( u_i^Tv_j + X_j^Tw + a_i + b_j + g \right) + \epsilon$$
+Let $Y_n := Y_{i_n, j_n}$
+
+The model variables have the following definition/meaning 
+<table>
+<tr>
+<td>$u_i \in \mathbb{R}^K$</td><td>latent variables of user $i$</td>
+</tr>
+<tr>
+<td>$v_j \in \mathbb{R}^K$</td><td>latent variables of item $j$</td>
+</tr>
+<tr>
+<td>$a_i \in \mathbb{R}$</td><td>bias for user $i$</td>
+</tr>
+<tr>
+<td>$b_j \in \mathbb{R}$</td><td>bias of item $j$</td>
+</tr>
+<tr>
+<td>$g \in \mathbb{R}$</td><td>global bias</td>
+</tr>
+<tr>
+<td>$w \in \mathbb{R}^L$</td><td>weights for the $j$th item features</td>
+</tr>
+</table>
+
+Define $\chi(i,j) := u_i^Tv_j + X_j^Tw + a_i + b_j + g$ and $\chi_n := \chi(i_n, j_n)$
+
+The full model is parametrized via
+$$\theta = \begin{pmatrix} u_1 & ... & u_I & v_1 & ... & v_J & a_1 & ... & a_I & b_1 & ... & b_J & g & w \end{pmatrix}^T$$
+
+We can write the loglikelihood as
+
+$$\mathcal{L}(\theta \,\vert\, \mathcal{D}, \mathcal{X}, \beta) = \sum_{n=1}^N \log \left( F_\epsilon(\beta_{Y_n} + \chi_n) - F_\epsilon(\beta_{Y_n - 1} + \chi_n) \right)$$
+##### Computing the gradient
+The gradient can be computed easily via the standard rules
+
+$$
+\begin{split}
+\frac{\partial}{\partial u_i} \mathcal{L}(\theta \,\vert\, \mathcal{D}, \mathcal{X}, \beta) &= \sum_{n=1}^N \frac{\partial}{\partial u_i} \log \left( F_\epsilon(\beta_{Y_n} + \chi_n) - F_\epsilon(\beta_{Y_n - 1} + \chi_n) \right) \\
+&= \sum_{n \in \lbrace n =1, ..., N \;\vert\; i_n = i\rbrace} \frac{\partial}{\partial u_i} \log \left( F_\epsilon(\beta_{Y_n} + \chi_n) - F_\epsilon(\beta_{Y_n - 1} + \chi_n) \right)
+\end{split}
+$$
+
+Let $I_i := \lbrace n =1, ..., N \;\vert\; i_n = i\rbrace, \quad J_j := \lbrace n =1, ..., N \;\vert\; j_n = j\rbrace$ , then
+
+$$
+\begin{split}
+\frac{\partial}{\partial u_i} \mathcal{L}(\theta \,\vert\, \mathcal{D}, \mathcal{X}, \beta) &= \sum_{n \in I_i}  \frac{ \frac{\partial}{\partial u_i}\left( F_\epsilon(\beta_{Y_n} + \chi_n) - F_\epsilon(\beta_{Y_n - 1} + \chi_n) \right)}{F_\epsilon(\beta_{Y_n} + \chi_n) - F_\epsilon(\beta_{Y_n - 1} + \chi_n)} \\
+&= \sum_{n \in I_i}  \frac{ f_\epsilon(\beta_{Y_n} + \chi_n) - f_\epsilon(\beta_{Y_n - 1} + \chi_n)}{F_\epsilon(\beta_{Y_n} + \chi_n) - F_\epsilon(\beta_{Y_n - 1} + \chi_n)}\frac{\partial}{\partial u_i} \chi_n
+\end{split}
+$$
+
+The structure will be always the same, so define
+$$ q_n := \frac{ f_\epsilon(\beta_{Y_n} + \chi_n) - f_\epsilon(\beta_{Y_n - 1} + \chi_n)}{F_\epsilon(\beta_{Y_n} + \chi_n) - F_\epsilon(\beta_{Y_n - 1} + \chi_n)}$$
+
+the gradient of any $\xi$ of the individual components can now be written as
+
+$$ \frac{\partial}{\partial \xi} \mathcal{L}(\theta \,\vert\, \mathcal{D}, \mathcal{X}, \beta) = \sum_{n=1}^N q_n \frac{\partial}{\partial \xi}\chi_n$$
+(note that for many terms this is zero!)
+
+Given
+
+$$ \frac{\partial}{\partial u_i}\chi_n = \begin{cases} v_{j_n} \quad n \in I_i \\
+0 \quad \text{else}\end{cases}$$
+$$ \frac{\partial}{\partial v_j}\chi_n = \begin{cases} u_{i_n} \quad n \in J_j \\
+0 \quad \text{else}\end{cases}$$
+$$ \frac{\partial}{\partial a_i}\chi_n = \begin{cases} 1 \quad n \in I_i \\
+0 \quad \text{else}\end{cases}$$
+$$ \frac{\partial}{\partial b_j}\chi_n = \begin{cases} 1 \quad n \in J_j \\
+0 \quad \text{else}\end{cases}$$
+
+$$ \frac{\partial}{\partial w}\chi_n = X_{j_n}$$
+$$\frac{\partial}{\partial g}\chi_n = 1$$
+
+the gradient of the full model is
+
+$$ \frac{\partial}{\partial \theta} \mathcal{L}(\theta \,\vert\, \mathcal{D}, \mathcal{X}, \beta) = \begin{pmatrix} \sum_{n \in I_1}q_n v_{j_n} & ... & \sum_{n \in I_I}q_n v_{j_n} & \sum_{n \in J_1}q_n u_{i_n} & ... & \sum_{n \in J_J}q_n u_{i_n} & \sum_{n \in I_1}q_n & ... & \sum_{n \in I_I}q_n & \sum_{n \in J_1}q_n & ... & \sum_{n \in J_J}q_n & \sum_{n =1, ..., N}q_n & \sum_{n =1, ..., N}q_nX_{j_n} \end{pmatrix}^T$$
+##### Notes
+This model usually tends to have a very large parameter vector due to the latent varibales. Especially when sparse data is given (which is often the case for ratings, i.e. imagine a user who did only rank 10-20 items) in order to get a meaningful and converging model prior should be used. 
+#### Links:
+- <http://www.cambridge.org/de/academic/subjects/statistics-probability/statistical-theory-and-methods/regression-categorical-data>
+- <http://fa.bianp.net/blog/2013/logistic-ordinal-regression/>
+- <http://arxiv.org/pdf/1408.2327v6.pdf>
+- <http://www.stat.ufl.edu/~aa/ordinal/agresti_ordinal_tutorial.pdf>
+- <http://onlinelibrary.wiley.com/book/10.1002/9780470594001>
