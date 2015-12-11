@@ -29,11 +29,11 @@ start_time = time.time()
 tree = createDecisionTree(train_rdd,range(len(columns_c)),columns_c)
 print 'Time taken to train tree:',time.time() - start_time
 
-"""
+
 #Testing the accuracy of the decision tree
 res_rdd = train_rdd.map(lambda x:(x[0],classify_tree(x[1],columns_c,tree)))
 print "Accuracy:", 100*(res_rdd.filter(lambda x:x[0] == x[1]).count())/float(res_rdd.count()),'%'
 
 print "Tree Structure"
 print tree
-"""
+
