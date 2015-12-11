@@ -10,3 +10,4 @@ cache/
 .DS_Store
 *.pyc
 .ipynb_checkpoints/
+ordReg/out.txt

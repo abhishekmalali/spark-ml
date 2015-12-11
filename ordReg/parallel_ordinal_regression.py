@@ -7,6 +7,10 @@ import os
 import pandas as pd
 import itertools
 import time
+
+# init Spark
+import findspark
+findspark.init()
 import pyspark
 import argparse
 
@@ -46,7 +50,7 @@ def main():
 
     #Initialize the Spark Context
     sc=pyspark.SparkContext()
-    df=pd.read_csv('../data/musicdata.csv',header=None)
+    df=pd.read_csv('../data/musicdata.small.csv',header=None)
     df.columns=['uid', 'aid', 'rating']
 
     # I and J are the number of users and artists, respectively
