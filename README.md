@@ -10,5 +10,7 @@ For running the random forest code, three datasets have been provided with the g
 
 For the second implementation, we were able to create trees using only actions and transformations. The test cases have been written for the datasets along with the base code for the implementation. This method is slow and cumbersome. All files are present in the spark-tree directory.
 
+Our code does not do as well as the scala implementation considering we have pyspark lagging us down. We did try some improvements in the python code to improve overall performance.
+
 ---
 (c) 2015 Chainani, Malali, Spiegelberg
