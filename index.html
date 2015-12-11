@@ -144,10 +144,15 @@
                         <p>Our basic intuition to parallelizing the problem was to think in two directions. The first method was to store the bootstrapped data in RDD’s and then parallelly create trees. This is a memory intensive method since we have a large amount of bootstrapped data in the RDD’s. This would allow spark workers to parallelly access all the bootstrapped data and create the decision trees. Unlike MLib we do not have an internal tree structure which does not have to be collected in Spark. Hence that will be our biggest cost in the algorithm.</p>
 
                         <img src="img/RF-parallel-1.png" class="image"/>
-                        <p></p>
+                        <br/>
                         <p>The second method will be to build the tree by using actions and transformations. We managed to get a tree implementation working written only actions and transformations with a very small portion using python functions. The technique works fine for smaller datasets but it’s time consuming in the case of larger datasets. Hence we decided not to go with this approach even when it did have a lower memory footprint for the problem.</p>
                         <img src="img/RF-parallel-2.png" class="image"/>
-                        <p></p>
+                        <br/>
+                        <h2>Results</h2>
+                        <br/>
+                        <p>We ran our implementation and benchmarked it against MLib's random forest, using the same dataset. As you can see, as we train more trees, the performance doesn't increase due to memory constraints. We extrapolate that our code is 1.5 times slower than MLib as trees increase.
+                        <img src="img/results_rf.png" class="image"/>
+
                     </div>
                 </div>
             </div>
