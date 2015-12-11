@@ -13,7 +13,6 @@ from multiParallelTree import *
 import csv
 import itertools
 data = []
-row_num = 0
 with open('../data/cov.csv', 'rb') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
     for row in spamreader:
@@ -35,9 +34,9 @@ columns = list(itertools.chain(*names))
 
 #Creating an RDD with bootstrapped data
 # n is number of trees in our forest
-ntrees=10
+ntrees=100
 start_time = time.time()
-res,data_train = create_Forest(sc, data, ntrees, columns, 30, discrete_column_ids=range(10)\
+res,data_train = createForest(sc, data, ntrees, columns, 10, discrete_column_ids=range(10)\
         , n_bins=10) 
 print "Time taken to generate the forest: ", time.time() - start_time
 #print res
